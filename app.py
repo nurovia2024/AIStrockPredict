@@ -389,3 +389,4 @@ page_template = """
     </script>
 </body>
 </html>
+"""
