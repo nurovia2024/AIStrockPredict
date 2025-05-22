@@ -63,41 +63,6 @@ def calculate_stroke_risk(data):
     
     return {"risk": risk, "score": score, "details": details}
 
-# Routes
-@app.route("/")
-def index():
-    return render_template_string(page_template)
-
-@app.route("/assess", methods=["POST"])
-def assess():
-    data = request.json
-    result = calculate_stroke_risk(data)
-    return jsonify(result)
-
-@app.route("/chat", methods=["POST"])
-def chat():
-    user_input = request.json.get("message", "")
-    
-    try:
-        response = openai.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a professional medical assistant. Provide accurate, helpful information about stroke symptoms, prevention, and treatment."},
-                {"role": "user", "content": user_input}
-            ],
-            temperature=0.7,
-            max_tokens=500,
-        )
-        reply = response.choices[0].message['content']
-    except Exception as e:
-        reply = f"Sorry, I encountered an error: {str(e)}"
-    
-    return jsonify({"reply": reply})
-
-import os
-
-port = int(os.environ.get("PORT", 5000))
-app.run(host='0.0.0.0', port=port)
 
 # Modern, responsive, multi-lingual page template
 page_template = """
@@ -395,3 +360,38 @@ page_template = """
 </body>
 </html>
 """
+# Routes
+@app.route("/")
+def index():
+    return render_template_string(page_template)
+
+@app.route("/assess", methods=["POST"])
+def assess():
+    data = request.json
+    result = calculate_stroke_risk(data)
+    return jsonify(result)
+
+@app.route("/chat", methods=["POST"])
+def chat():
+    user_input = request.json.get("message", "")
+    
+    try:
+        response = openai.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a professional medical assistant. Provide accurate, helpful information about stroke symptoms, prevention, and treatment."},
+                {"role": "user", "content": user_input}
+            ],
+            temperature=0.7,
+            max_tokens=500,
+        )
+        reply = response.choices[0].message['content']
+    except Exception as e:
+        reply = f"Sorry, I encountered an error: {str(e)}"
+    
+    return jsonify({"reply": reply})
+
+import os
+
+port = int(os.environ.get("PORT", 5000))
+app.run(host='0.0.0.0', port=port)
