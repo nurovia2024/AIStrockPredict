@@ -94,6 +94,11 @@ def chat():
     
     return jsonify({"reply": reply})
 
+import os
+
+port = int(os.environ.get("PORT", 5000))
+app.run(host='0.0.0.0', port=port)
+
 # Modern, responsive, multi-lingual page template
 page_template = """
 <!DOCTYPE html>
